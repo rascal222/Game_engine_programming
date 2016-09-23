@@ -143,6 +143,12 @@ CMakeLists.txt.user*
 *.userosscache
 *.sln.docstates
 
+### ???
+*.filters
+*.vcxproj.*
+*.vcxproj
+
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
