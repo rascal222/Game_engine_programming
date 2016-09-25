@@ -150,29 +150,71 @@ void TriangleWindow::render()
 
     m_program->setUniformValue(m_matrixUniform, matrix);
 
-    GLfloat vertices[] = {
-        0.0f, 0.707f,
-        -0.5f, -0.5f,
-        0.5f, -0.5f
-    };
+	/*
+	GLfloat vertices[] = {
+	0.0f, 0.707f,
+	-0.5f, -0.5f,
+	0.5f, -0.5f
+	};
+	*/
 
-    GLfloat colors[] = {
-        1.0f, 0.0f, 1.0f,
+	// nbVertices -> nombre de sommets par côté
+	// 3 -> x y z
+	int const nbVertices = 16;
+	GLdouble vertices[nbVertices * nbVertices * 3];
+	
+	double xmin = -0.5, xmax = 0.5, ymin = -0.5, ymax = 0.5;
+	// map carré même delta x et y
+	double delta = abs(xmax - xmin) / (nbVertices - 1);
+	qInfo() << delta << endl;
+	double y = ymax;
+	for (int i = 0; i<nbVertices; i++)
+	{
+		double x = xmin;
+		for (int j = 0; j<nbVertices; j++)
+		{
+			vertices[i * nbVertices + j + 0] = x;
+			vertices[i * nbVertices + j + 1] = y;
+			vertices[i * nbVertices + j + 2] = 0;
+			qInfo() << x << " " << y << endl;
+			x += delta;
+		}
+		y -= delta;
+	}
+
+	GLfloat colors[] = {
+		1.0f, 0.0f, 1.0f };/*,
         1.0f, 1.0f, 0.0f,
         0.0f, 1.0f, 1.0f
     };
 
-    glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors);
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, vertices);
+    glVertexAttribPointer(m_colAttr, 1, GL_FLOAT, GL_FALSE, 0, colors);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_LINES, 0, 16*16);
 
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);
+	*/
+	
+	glBegin(GL_TRIANGLE_STRIP);
+		//for (int i = 0; i<nbVertices; i++)
+		//{
+		int i = 0;
+		for (int j = 0; j<nbVertices-1; j++)
+		{
+			glVertex3d(vertices[i * nbVertices + j + 0], vertices[i * nbVertices + j + 1], vertices[i * nbVertices + j + 2]);
+			glVertex3d(vertices[i * nbVertices + j+1 + 0], vertices[i * nbVertices + j+1 + 1], vertices[i * nbVertices + j+1 + 2]);
+			glVertex3d(vertices[(i + 1) * nbVertices + j + 0], vertices[(i + 1) * nbVertices + j + 1], vertices[(i + 1) * nbVertices + j + 2]);
+			glVertex3d(vertices[(i + 1) * nbVertices + j+1 + 0], vertices[(i + 1) * nbVertices + j+1 + 1], vertices[(i + 1) * nbVertices + j+1 + 2]);
 
+		}
+		//}
+	glEnd();
+	
     m_program->release();
 
     ++m_frame;
